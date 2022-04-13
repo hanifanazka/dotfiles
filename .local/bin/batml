@@ -1,0 +1,5 @@
+#!/bin/bash
+
+TMPFILE=$(tempfile);
+bat $1 --decorations never --paging never --color always --theme ansi-light | aha >> $TMPFILE;
+cat $TMPFILE
