@@ -1,0 +1,33 @@
+# -*- mode: sh; -*-
+
+lat=$1 
+lon=$2
+preset=$3
+
+detail=$(emacs --batch \
+      --eval "(setq calendar-latitude $lat)" \
+      --eval "(setq calendar-longitude $lon)" \
+      --eval "(package-initialize)" \
+      --eval "(require 'awqat)" \
+      --eval "(awqat-set-preset-$preset)" \
+      --eval "(awqat-times-for-day)" \
+      2>&1)
+
+summary=$(emacs --batch \
+      --eval "(setq calendar-latitude $lat)" \
+      --eval "(setq calendar-longitude $lon)" \
+      --eval "(package-initialize)" \
+      --eval "(require 'awqat)" \
+      --eval "(awqat-set-preset-$preset)" \
+      --eval "
+(let ((next-time (awqat--next-time)))
+  (seq-let (time _ idx) next-time
+    (let* ((name (nth idx awqat--prayer-names))
+           (time-remaining (mod (+ (- time (awqat--now)) 24.0) 24.0))
+           (h (floor time-remaining))
+           (m (floor (* (mod time-remaining 1) 60)))
+           (message (s-format \"$\{prayer\} in $\{hours\}h$\{minutes\}m\" 'aget (list (cons \"prayer\" name) (cons \"hours\" h) (cons \"minutes\" m))))
+           (len (length message)))
+      (princ message))))" \
+      2>&1)
+echo "{\"text\": \"$summary\", \"tooltip\": \"$detail\"}"

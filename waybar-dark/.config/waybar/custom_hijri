@@ -1,0 +1,9 @@
+# -*- mode: sh; -*-
+
+emacs --batch \
+      --eval "(setq calendar-latitude 30.767)" \
+      --eval "(setq calendar-longitude 76.573)" \
+      --eval "(require 'cal-islam)" \
+      --eval "(package-initialize)" \
+      --eval "(princ (calendar-islamic-date-string))" \
+      2>&1

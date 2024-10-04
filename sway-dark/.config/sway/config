@@ -1,0 +1,320 @@
+# Default config for sway
+#
+# Copy this to ~/.config/sway/config and edit it to your liking.
+#
+# Read `man 5 sway` for a complete reference.
+
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Your preferred terminal emulator
+set $term foot
+# Your preferred application launcher
+# Note: pass the final command to swaymsg so that the resulting window can be opened
+# on the original workspace that the command was run on.
+set $wofi_base wofi --monitor=eDP-1
+set $menu      $wofi_base --show drun --allow-images -D key_expand=Tab -D image_size=24
+
+### Output configuration
+#
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+#output * bg ~/.local/share/backgrounds/sway/wallpaper.png fill
+#output * bg "~/.local/share/backgrounds/sway/Summer sale 23 sign off_cropped.png" center
+exec swww-daemon --format xrgb
+exec swww img ".local/share/backgrounds/sway/Summer sale 23 sign off_cropped_night.png"
+exec swayblur --animate 5
+gaps inner 4
+#gaps vertical 2
+
+#
+# Example configuration:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+# for_window
+for_window [title="Picture-in-Picture"] floating enable
+for_window [app_id="io.github.seadve.Mousai"] floating enable
+# Zoom Meeting App
+# 
+# For pop up notification windows that don't use notifications api
+for_window [class="zoom" title="^zoom$"] border none, floating enable
+# For specific Zoom windows
+#for_window [class="zoom" title="^(Zoom|About)$"] border pixel, floating enable
+#for_window [class="zoom" title="Settings"] floating enable, floating_minimum_size 959 x 700
+# Open Zoom Meeting windows on a new workspace (a bit hacky)
+#for_window [class="zoom" title="Zoom Meeting(.*)?"] workspace next_on_output --create, move container to workspace current, floating disable, inhibit_idle open
+# For Google Chrome, use Chrome titlebar
+for_window [class="Google-chrome"] border none
+# Float magick Commands window
+for_window [title="Commands" class="Display" shell="xwayland"] floating enable
+
+
+### Idle configuration
+#
+# Example configuration:
+#
+exec swayidle -w \
+         lock 'swaylock --clock --indicator --daemonize -i ~/.local/share/swaylock/background.png' \
+         timeout 300 'chayang && swaylock --clock --indicator --daemonize -i ~/.local/share/swaylock/background.png' \
+         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         before-sleep 'swaylock --clock --indicator --daemonize -i ~/.local/share/swaylock/background.png'
+#
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+
+### Input configuration
+input type:touchpad {
+    dwt enabled
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled  
+}
+
+input type:keyboard {
+    xkb_layout us,ara
+    xkb_options grp:win_space_toggle
+}
+
+# You can get the names of y  our inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+### Key bindings
+#
+# Basics:
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term
+
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+
+    # Start your launcher
+    bindsym $mod+d exec "$menu"
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+
+    # Exit sway (logs you out of your Wayland session)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+    # Control pulse audio volume with pamixer (https://github.com/cdemoulins/pamixer)
+    bindsym --locked XF86AudioRaiseVolume  exec '~/.config/sway/volume.sh up'
+    bindsym --locked XF86AudioLowerVolume  exec '~/.config/sway/volume.sh down'
+    bindsym --locked XF86AudioMute         exec '~/.config/sway/volume.sh togglemute'
+    bindsym --locked XF86AudioMicMute      exec 'pactl set-source-mute @DEFAULT_SOURCE@ toggle'
+
+    # Control MPRIS aware media players with playerctl (https://github.com/altdesktop/playerctl)
+    bindsym XF86AudioMedia exec 'playerctl play-pause'
+    bindsym XF86AudioPlay  exec 'playerctl play-pause'
+    bindsym XF86AudioPrev  exec 'playerctl previous'
+    bindsym XF86AudioNext  exec 'playerctl next'
+
+    # Control screen backlight brightness with light (https://github.com/haikarainen/light)
+    # Cap minimum brightness to 1
+    bindsym --locked XF86MonBrightnessUp   exec 'if (( $(echo "$(light -G) <  5.00" | bc -l) )); then light -S 5; else light -A 5; fi'
+    bindsym --locked XF86MonBrightnessDown exec 'if (( $(echo "$(light -G) <= 5.00" | bc -l) )); then light -S 1; else light -U 5; fi'
+
+    # Screenshot
+    bindsym Print       exec 'grim -c - | satty --fullscreen --filename - --output-filename "~/Pictures/Screenshots/$(date +"%Y%m%d%H%M%S").png"'
+    bindsym Alt+Print   exec 'grim -c - | wl-copy'
+    bindsym Shift+Print exec 'grim -c && notify-send "screenshot captured" --expire-time=150'
+
+    # Clipboard
+    bindsym $mod+c exec 'cliphist list | $wofi_base --show dmenu --cache-file=/dev/null --width 950 | cliphist decode | wl-copy'
+    # --width: because of overflowed text blocked by [feat: add flag to limit preview size #88](https://github.com/sentriz/cliphist/pull/88)
+    # the above issue has been resolved with a new flag of: --preview-width
+    # TODO: implement above and syncronize by the width style of the wofi
+    # ISSUE: KeePassXC's temporary-copy failed if this comand executed within the window time
+    # ISSUE: ISSUE: wl-copy get executed even if wofi cancelled
+
+    # Lock
+    bindsym $mod+delete exec 'loginctl lock-session'
+    bindsym $mod+Shift+delete exec 'swaylock --screenshot --clock --indicator-idle-visible'
+
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+    # Switch to workspace
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+
+    # move workspace to output
+    bindsym $mod+Control+Shift+$left  move workspace to output left
+    bindsym $mod+Control+Shift+$right move workspace to output right
+    bindsym $mod+Control+Shift+$up    move workspace to output up
+    bindsym $mod+Control+Shift+$down  move workspace to output down
+    # move workspace to output with arrow keys
+    bindsym $mod+Control+Shift+Left  move workspace to output left
+    bindsym $mod+Control+Shift+Right move workspace to output right
+    bindsym $mod+Control+Shift+Up    move workspace to output up
+    bindsym $mod+Control+Shift+Down  move workspace to output down
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+    # Wait for https://curiouscoding.nl/linux/sway-fullscreen/
+    # bindsym $mod+Shift+f inhibit_fullscreen toggle
+
+    # Make the current sticky
+    bindsym $mod+shift+f sticky toggle
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    # bindsym $mod+space focus mode_toggle
+    # the shortcut used for cycle keyboard layout
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+# bar {
+#     position top
+# 
+#     # When the status_command prints a new line to stdout, swaybar updates.
+#     # The default just shows the current date and time.
+#     status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
+# 
+#     colors {
+#         statusline #ffffff
+#         background #323232
+#         inactive_workspace #32323200 #32323200 #5c5c5c
+#     }
+# }
+bar swaybar_command waybar
+
+exec wl-paste --type text --watch /home/hanifanazka/.config/sway/mycliphist
+exec wl-paste --type image --watch /home/hanifanazka/.config/sway/mycliphist
+exec ~/.config/sway/volume.sh startup
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# https://github.com/swaywm/sway/issues/595#issuecomment-214203380
+#exec wmname LG3D
+#exec conky
+
+include /etc/sway/config.d/*
+# Must be after the above. A Darkman script, SWWW requires WAYLAND_DISPLAY ENV which imported just now
+# Disable darkman. systemctl --user disable darkman. The below is enough
+exec darkman run
+
+titlebar_border_thickness 2
+default_border normal 2
+client.focused          #4C7899 #285577 #ffffff #4C7899 #4C7899
+client.focused_inactive #888888 #444444 #ffffff #888888 #888888
+client.unfocused        #444444 #111111 #888888 #444444 #444444
+#for_window [tiling app_id="org.gnome.Console"] border pixel 2
+#for_window [tiling app_id="firefox"]           border pixel 2
+#for_window [tiling app_id="org.gnome.Calculator"] border pixel 2

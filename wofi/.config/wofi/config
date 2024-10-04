@@ -1,0 +1,5 @@
+layer=overlay
+insensitive=true
+# provide preknown fixed size to remove flicker
+height=384
+width=683 # cliphist included custom --width overriding this setting. it was set because of overflowed text. See sway config and navigate to clipboard section

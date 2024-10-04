@@ -1,0 +1,209 @@
+// -*- mode: jsonc; -*-
+// vi: syntax=jsonc
+// =============================================================================
+//
+// Waybar configuration
+//
+// Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
+//
+// =============================================================================
+
+[
+  {
+    // -------------------------------------------------------------------------
+    // Global configuration
+    // -------------------------------------------------------------------------
+    
+    "layer": "bottom",
+    "position": "top",
+    "height": 30,
+    "output": "eDP-1",
+    
+    "modules-left": [
+      "clock",
+      "idle_inhibitor",
+      "mpris",
+      "privacy"
+    ],
+    
+    "modules-center": [
+      "sway/workspaces",
+      "sway/mode"
+    ],
+    
+    "modules-right": [
+      "tray",
+      "network",
+      "bluetooth",
+      "cpu",
+      "memory",
+      "sway/language",
+      "battery"
+    ],
+    
+    // -------------------------------------------------------------------------
+    // Modules
+    // -------------------------------------------------------------------------
+
+    "sway/workspaces": {
+      "all-outputs": false,
+      "disable-scroll": true,
+      "persistent-workspaces": {
+	"1": [],
+	"2": [],
+	"3": [],
+	"4": [],
+	"5": [],
+	"6": [],
+	"7": [],
+	"8": [],
+	"9": [],
+	"10": []
+      }
+    },
+
+    "sway/mode": {
+      "format": " {}",
+      "tooltip": false
+    },
+    
+    "idle_inhibitor": {
+      "format": "{icon}",
+      "format-icons": {
+	"activated": "",
+	"deactivated": ""
+      }
+    },
+
+    "mpris": {
+      "format": "{player_icon} {title}",
+      "format-paused": "{status_icon} {title}",
+      "title-len": 12,
+      "player-icons": {
+	"default": "▶",
+	"mpv": "🎵"
+      },
+      "status-icons": {
+	"paused": "⏸"
+      }
+    },
+
+    "clock": {
+      "interval": 1,
+      "format": "{:%a %Y-%m-%d <span background='#548eba' color='white'> %T </span> %Z}",
+      "tooltip-format": "<span font='cozette' size='85%'>{tz_list}</span>",
+      "timezones": [
+	"Asia/Kolkata",
+        "Asia/Jakarta",
+        "Poland",
+        "Europe/Istanbul"
+      ]
+    },
+    
+    "privacy": {
+      "icon-size": 16
+    },
+
+    "network": {
+      "interval": 5,
+      "format-wifi": "{essid}", // Icon: wifi: 
+      "format-ethernet": "{ifname}: {ipaddr}/{cidr}", // Icon: ethernet: 
+      "format-disconnected": "Disconnected", // Icon: warning: ⚠
+      "tooltip-format": "{ifname}: {ipaddr}"
+    },
+
+    "bluetooth": {
+      "format-off": "",
+      "format-on": " on",
+      "format-disabled": "",
+      "format-connected": " cntd",
+      "tooltip-format-connected": "{device_enumerate}",
+      "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}"
+    },
+
+    "cpu": {
+      "interval": 5,
+      "format": "{icon0}{icon1}{icon2}{icon3}", // Icon: CPU: 
+      "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+      "states": {
+	"warning": 70,
+	"critical": 90
+      }
+    },
+
+    "memory": {
+      "interval": 5,
+      "format": "{}%", // Icon: memory: 
+      "states": {
+	"warning": 70,
+	"critical": 90
+      }
+    },
+
+    "sway/language": {
+      "format": "{}" // Icon: keyboard: 
+    },
+
+    "battery": {
+      "interval": 10,
+      "states": {
+	"warning": 30,
+	"critical": 15
+      },
+      "format": "{icon} {capacity}%",
+      "format-icons": [
+	"", // Icon: battery-full
+	"", // Icon: battery-three-quarters
+	"", // Icon: battery-half
+	"", // Icon: battery-quarter
+	""  // Icon: battery-empty
+      ],
+      "tooltip": true
+    }
+  },
+  {
+    "layer": "bottom",
+    "position": "bottom",
+    "height": 20, //11
+    "output": "eDP-1",
+    
+    "modules-left": [
+      "custom/hijri"
+    ],
+    
+    "modules-center": [
+      "custom/task"
+    ],
+    
+    "modules-right": [
+      "custom/awqat#ind",
+      "custom/awqat#idn"
+    ],
+    
+    "custom/task": {
+      "exec": "cat ~/.config/waybar/task",
+      "format": "{}",
+      "signal": 8 // trigger with `pkill -RTMIN+8 waybar`
+    },
+    
+    "custom/hijri": {
+      "exec": "/home/hanifanazka/.config/waybar/custom_hijri",
+      "format": "{}",
+      "interval": 60
+    },
+    
+    "custom/awqat#ind": {
+      "exec": "/home/hanifanazka/.config/waybar/custom_awqat 30.767 76.573 karachi-university-of-islamic-sciences",
+      "format": "🇮🇳 {}",
+      "interval": 30,
+      "return-type": "json"
+    },
+
+    "custom/awqat#idn": {
+      "exec": "/home/hanifanazka/.config/waybar/custom_awqat -6.331 106.953 singapore",
+      "format": "🇮🇩 {}",
+      "interval": 30,
+      "return-type": "json"
+    }
+  }
+]

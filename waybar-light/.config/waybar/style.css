@@ -1,0 +1,238 @@
+
+/* =============================================================================
+ *
+ * Waybar configuration
+ *
+ * Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
+ *
+ * =========================================================================== */
+
+/* -----------------------------------------------------------------------------
+ * Keyframes
+ * -------------------------------------------------------------------------- */
+
+@keyframes blink-warning {
+    70% {
+        color: white;
+    }
+
+    to {
+        color: white;
+        background-color: orange;
+    }
+}
+
+@keyframes blink-critical {
+    70% {
+	color: white;
+    }
+
+    to {
+        color: white;
+        background-color: red;
+    }
+}
+
+
+/* -----------------------------------------------------------------------------
+ * Base styles
+ * -------------------------------------------------------------------------- */
+
+/* Reset all styles */
+* {
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+button:hover {
+  box-shadow: none; /* Remove predefined box-shadow */
+  text-shadow: none; /* Remove predefined text-shadow */
+  background: none; /* Remove predefined background color (white) */
+  transition: none; /* Disable predefined animations */
+}
+
+/* The whole bar */
+#waybar {
+    background: transparent;
+    color: #666;
+    font-family: cozette, "Font Awesome 6 Free", mono;
+    font-size: 13px;
+}
+
+#waybar.bottom {
+    font-family: scientifica;
+    font-size: 11px;
+}
+
+#waybar .modules-left,
+#waybar .modules-right {
+    margin: 0 3px;
+}
+
+#waybar .module,
+#waybar #privacy {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin: 2px 1px;
+    border: 1px solid #aaa;
+    background: white;
+}
+
+#waybar.top #workspaces {
+    padding: 0;
+}
+
+#workspaces button.empty {
+    color: #cccccc;
+}
+
+#workspaces button {
+    border-top: 2px solid transparent;
+    /* To compensate for the top border and still have vertical centering */
+    padding-bottom: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    color: #666;
+}
+
+#workspaces button.focused {
+    border-color:  #87b4d6; /* #4c7899; */
+    background-color: #548eba; /* #285577; */ 
+    color: white;
+}
+
+#workspaces button.urgent {
+    border-color: #c9545d;
+    background-color: #321517;
+    color: #c9545d;
+}
+
+#workspaces button:hover {
+    border-color: #aaa;
+    background-color: #aaa;
+    color: white;
+}
+
+/* -----------------------------------------------------------------------------
+ * Module styles
+ * -------------------------------------------------------------------------- */
+
+#battery {
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#battery.charging {
+    color: lightgreen;
+}
+
+#battery.warning {
+    color: orange;
+}
+
+#battery.critical {
+    color: red;
+}
+
+#battery.warning.discharging {
+    animation-name: blink-warning;
+    animation-duration: 3s;
+}
+
+#battery.critical.discharging {
+    animation-name: blink-critical;
+    animation-duration: 2s;
+}
+
+#cpu {
+    font-family: mono;
+}
+
+#cpu.warning {
+    color: orange;
+}
+
+#cpu.critical {
+    color: red;
+}
+
+#memory {
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#memory.warning {
+    color: orange;
+}
+
+#memory.critical {
+    color: red;
+    animation-name: blink-critical;
+    animation-duration: 2s;
+}
+
+#mode {
+    background: #64727D;
+    border-top: 2px solid white;
+    /* To compensate for the top border and still have vertical centering */
+    padding-bottom: 2px;
+}
+
+#network {
+    /* No styles */
+}
+
+#network.disconnected {
+    color: orange;
+}
+
+#pulseaudio {
+    /* No styles */
+}
+
+#pulseaudio.muted {
+    /* No styles */
+}
+
+#custom-spotify {
+    color: rgb(102, 220, 105);
+}
+
+#temperature {
+    /* No styles */
+}
+
+#temperature.critical {
+    color: red;
+}
+
+#tray {
+    /* No styles */
+}
+
+#window {
+    font-weight: bold;
+}
+
+
+#custom-task {
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    padding: 0 10px;
+    animation-name: blink-warning;
+    animation-duration: 3s;
+}
+
+#privacy {
+    color: red;
+}
+
+#idle_inhibitor.activated {
+    color: red;
+}
