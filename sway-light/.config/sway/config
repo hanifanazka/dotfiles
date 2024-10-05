@@ -26,7 +26,7 @@ set $menu      $wofi_base --show drun --allow-images -D key_expand=Tab -D image_
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 exec swww-daemon --format xrgb
-exec swww img ".local/share/backgrounds/sway/Untitled.png"
+exec swww img ".local/share/backgrounds/sway/wallpaperflare.com_wallpaper(5).jpg"
 exec swayblur --animate 5
 gaps inner 4
 #gaps vertical 2
