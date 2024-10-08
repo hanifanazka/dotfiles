@@ -87,7 +87,7 @@ whitelist=("foot")
 terminal_emulator=$(ps -o ppid= -p $$ | xargs ps -o cmd= -p)
 
 if command -v theme.sh > /dev/null &&
-	[[ "${whitelist[@]}" =~ $terminal_emulator ]];
+	[[ "${whitelist[@]}" =~ $terminal_emulator.* ]];
 then
     # open the light / dark theme based on darkman
     source ~/.terminal_scheme
