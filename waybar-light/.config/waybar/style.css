@@ -105,9 +105,9 @@ button:hover {
 }
 
 #workspaces button.urgent {
-    border-color: #c9545d;
-    background-color: #321517;
-    color: #c9545d;
+    border-color: #da5e64;
+    background-color: #ecd6d5;
+    color: #da5e64;
 }
 
 #workspaces button:hover {
