@@ -316,3 +316,7 @@ client.unfocused        #444444 #111111 #888888 #444444 #444444
 #for_window [tiling app_id="org.gnome.Console"] border pixel 2
 #for_window [tiling app_id="firefox"]           border pixel 2
 #for_window [tiling app_id="org.gnome.Calculator"] border pixel 2
+
+for_window [app_id="foot-fzf"] floating enable, border pixel 2
+bindsym $mod+shift+z exec foot --app-id "foot-fzf" --window-size-pixels 683x384 -- bash -c "source ~/.terminal_scheme; fd . --type f /home/hanifanazka/notes --exec basename | fzf | xargs -I{} swaymsg exec emacs \"/home/hanifanazka/notes/{}\""
+bindsym $mod+z exec emacs --eval '(shell-command "swaymsg floating enabled")' --eval '(setq dired-listing-switches "-lI *~")' /home/hanifanazka/notes/`date +%Y%m%d%H%M%S%Z`.org
