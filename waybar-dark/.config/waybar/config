@@ -107,9 +107,9 @@
     "network": {
       "interval": 5,
       "format-wifi": "{essid}", // Icon: wifi: 
-      "format-ethernet": "{ifname}: {ipaddr}/{cidr}", // Icon: ethernet: 
+      "format-ethernet": "{ifname}", // Icon: ethernet: 
       "format-disconnected": "Disconnected", // Icon: warning: ⚠
-      "tooltip-format": "{ifname}: {ipaddr}"
+      "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
     },
 
     "bluetooth": {
