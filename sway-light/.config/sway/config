@@ -41,6 +41,11 @@ gaps inner 4
 # for_window
 for_window [title="Picture-in-Picture"] floating enable
 for_window [app_id="io.github.seadve.Mousai"] floating enable
+
+layer_effects "swaync-control-center"      blur enable; blur_ignore_transparent true
+layer_effects "swaync-notification-window" blur enable; blur_ignore_transparent true
+layer_effects "gtk-layer-shell"            blur enable; blur_ignore_transparent false
+
 # Zoom Meeting App
 # 
 # For pop up notification windows that don't use notifications api
@@ -145,6 +150,9 @@ input type:keyboard {
     # Lock
     bindsym $mod+delete exec 'loginctl lock-session'
     bindsym $mod+Shift+delete exec 'swaylock --screenshot --clock --indicator-idle-visible'
+
+    # Notification panel
+    bindsym $mod+n exec 'swaync-client --toggle-panel'
 
 #
 # Moving around:
@@ -320,3 +328,5 @@ client.unfocused        #aaaaaa #eeeeee #888888 #aaaaaa #aaaaaa
 for_window [app_id="foot-fzf"] floating enable, border pixel 2
 bindsym $mod+shift+z exec foot --app-id "foot-fzf" --window-size-pixels 683x384 -- bash -c "source ~/.terminal_scheme; fd . --type f /home/hanifanazka/notes --exec basename | fzf | xargs -I{} swaymsg exec emacs \"/home/hanifanazka/notes/{}\""
 bindsym $mod+z exec emacs --eval '(shell-command "swaymsg floating enabled")' --eval '(setq dired-listing-switches "-lI *~")' /home/hanifanazka/notes/`date +%Y%m%d%H%M%S%Z`.org
+
+exec ~/opt/sway-timetracker/target/release/sway-timetracker-daemon
